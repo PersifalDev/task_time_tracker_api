@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-table-tasks
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/001-create-table-tasks.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 002-create-table-time-records
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/002-create-table-time-records.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 003-create-table-employees
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/003-create-table-employees.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 004-seed-employees
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/004-seed-employees.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 005-seed-tasks
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/005-seed-tasks.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 006-seed-time-records
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/006-seed-time-records.sql
+            relativeToChangelogFile: false

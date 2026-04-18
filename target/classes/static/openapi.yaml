@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Сервис учета рабочего времени сотрудников
+  version: 1.0.0
+  description: REST API для сотрудников, задач и учета затраченного времени
+servers:
+  - url: http://localhost:8090
+security:
+  - bearerAuth: []
+tags:
+  - name: Сотрудники
+  - name: Задачи
+  - name: Учет времени
+paths:
+  /api/employee:
+    post:
+      summary: Зарегистрировать сотрудника
+      tags: [Сотрудники]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeRegistration'
+      responses:
+        '201':
+          description: Сотрудник успешно зарегистрирован
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/employee/auth:
+    post:
+      summary: Авторизовать сотрудника
+      tags: [Сотрудники]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCredentials'
+      responses:
+        '200':
+          description: JWT токен успешно выдан
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/employee/{id}:
+    get:
+      summary: Получить сотрудника по идентификатору
+      tags: [Сотрудники]
+      parameters:
+        - $ref: '#/components/parameters/EmployeeId'
+      responses:
+        '200':
+          description: Сотрудник найден
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/employee/debug/auth:
+    get:
+      summary: Показать данные текущей аутентификации
+      tags: [Сотрудники]
+      security: []
+      responses:
+        '200':
+          description: Информация о текущей аутентификации
+  /api/tasks:
+    post:
+      summary: Создать задачу
+      tags: [Задачи]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Задача успешно создана
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/tasks/{id}:
+    get:
+      summary: Получить задачу по идентификатору
+      tags: [Задачи]
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Задача найдена
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/tasks/{id}/status:
+    patch:
+      summary: Изменить статус задачи
+      tags: [Задачи]
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Статус задачи успешно изменен
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/time-records:
+    post:
+      summary: Создать запись о затраченном времени
+      tags: [Учет времени]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeRecordCreateRequest'
+      responses:
+        '201':
+          description: Запись времени успешно создана
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/time-records/{id}:
+    get:
+      summary: Получить запись времени по идентификатору
+      tags: [Учет времени]
+      parameters:
+        - $ref: '#/components/parameters/TimeRecordId'
+      responses:
+        '200':
+          description: Запись времени найдена
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/time-records/search:
+    post:
+      summary: Найти записи времени сотрудника
+      tags: [Учет времени]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeRecordRequestFilter'
+      responses:
+        '200':
+          description: Список записей успешно получен
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/time-records/info:
+    post:
+      summary: Получить сводную информацию по времени сотрудника
+      tags: [Учет времени]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeRecordRequestFilter'
+      responses:
+        '200':
+          description: Сводная информация успешно получена
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    EmployeeId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
+    TaskId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 10
+    TimeRecordId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 100
+  responses:
+    BadRequest:
+      description: Некорректный запрос
+    Unauthorized:
+      description: Не выполнена аутентификация
+    Forbidden:
+      description: Недостаточно прав
+    NotFound:
+      description: Сущность не найдена
+    Conflict:
+      description: Конфликт бизнес-правил
+  schemas:
+    EmployeeRegistration:
+      type: object
+      required: [login, password, age]
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        age:
+          type: integer
+    EmployeeCredentials:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+    TaskCreateRequest:
+      type: object
+      required: [title, description]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+    TaskUpdateRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [NEW, IN_PROGRESS, DONE]
+    TimeRecordCreateRequest:
+      type: object
+      required: [employeeId, taskId, description, startTime, endTime]
+      properties:
+        employeeId:
+          type: integer
+        taskId:
+          type: integer
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    TimeRecordRequestFilter:
+      type: object
+      required: [employeeId]
+      properties:
+        employeeId:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

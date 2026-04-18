@@ -1,0 +1,71 @@
+server:
+  port: ${TIME_TRACKER_SERVER_PORT:8090}
+
+spring:
+  application:
+    name: ${TIME_TRACKER_APPLICATION_NAME:task_time_tracker_api}
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  datasource:
+    url: ${TIME_TRACKER_DB_URL}
+    username: ${POSTGRES_TIME_TRACKER_USER}
+    password: ${POSTGRES_TIME_TRACKER_PASSWORD}
+    driver-class-name: ${TIME_TRACKER_DB_DRIVER_CLASS_NAME:org.postgresql.Driver}
+
+  liquibase:
+    enabled: ${TIME_TRACKER_LIQUIBASE_ENABLED:true}
+    change-log: classpath:db/changelog/changelog-master.yaml
+    default-schema: ${TIME_TRACKER_DB_SCHEMA:public}
+    liquibase-schema: ${TIME_TRACKER_DB_SCHEMA:public}
+
+  data:
+    redis:
+      host: ${TIME_TRACKER_REDIS_HOST:localhost}
+      port: ${TIME_TRACKER_REDIS_PORT:6380}
+      database: ${TIME_TRACKER_REDIS_DB:0}
+      timeout: ${TIME_TRACKER_REDIS_TIMEOUT:2s}
+
+  cache:
+    type: ${TIME_TRACKER_CACHE_TYPE:redis}
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:}
+  lifetime: ${JWT_LIFETIME_MS:86400000}
+
+app:
+  pages:
+    defaultPageNumber: ${TIME_TRACKER_DEFAULT_PAGE_NUMBER:0}
+    defaultPageSize: ${TIME_TRACKER_DEFAULT_PAGE_SIZE:3}
+  cache:
+    defaultTtl: ${TIME_TRACKER_CACHE_DEFAULT_TTL:30s}
+    tasksTtl: ${TIME_TRACKER_CACHE_TASKS_TTL:30s}
+    employeesTtl: ${TIME_TRACKER_CACHE_EMPLOYEES_TTL:30s}
+    timeRecordsTtl: ${TIME_TRACKER_CACHE_TIME_RECORDS_TTL:30s}
+  openapi:
+    server-url: ${TIME_TRACKER_OPENAPI_SERVER_URL:http://localhost:8090}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v3/api-docs
+    display-request-duration: true
+    operationsSorter: alpha
+    tagsSorter: alpha
+    docExpansion: none
+    defaultModelsExpandDepth: 1
+    filter: true
+    try-it-out-enabled: true
+    syntaxHighlight:
+      activated: false

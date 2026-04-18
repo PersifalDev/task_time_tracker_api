@@ -1,0 +1,28 @@
+spring:
+  liquibase:
+    enabled: ${TIME_TRACKER_LIQUIBASE_ENABLED:true}
+    change-log: classpath:db/changelog/changelog-master.yaml
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  lifetime: ${JWT_LIFETIME_MS:86400000}
+
+app:
+  pages:
+    defaultPageNumber: ${TIME_TRACKER_DEFAULT_PAGE_NUMBER:0}
+    defaultPageSize: ${TIME_TRACKER_DEFAULT_PAGE_SIZE:3}
+  cache:
+    defaultTtl: ${TIME_TRACKER_CACHE_DEFAULT_TTL:30s}
+    tasksTtl: ${TIME_TRACKER_CACHE_TASKS_TTL:30s}
+    employeesTtl: ${TIME_TRACKER_CACHE_EMPLOYEES_TTL:30s}
+    timeRecordsTtl: ${TIME_TRACKER_CACHE_TIME_RECORDS_TTL:30s}
+  openapi:
+    server-url: ${TIME_TRACKER_OPENAPI_SERVER_URL:http://localhost:8090}
