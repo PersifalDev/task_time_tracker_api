@@ -28,12 +28,7 @@ spring:
 
   cache:
     type: ${TIME_TRACKER_CACHE_TYPE:redis}
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-
+    
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
