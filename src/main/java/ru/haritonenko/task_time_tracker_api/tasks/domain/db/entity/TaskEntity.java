@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 
 import java.time.OffsetDateTime;
@@ -27,6 +28,8 @@ public class TaskEntity {
     private String description;
     @NotNull(message = "Status must not be null")
     private TaskStatus status;
+    @NotNull(message = "Priority must not be null")
+    private TaskPriority priority;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 }

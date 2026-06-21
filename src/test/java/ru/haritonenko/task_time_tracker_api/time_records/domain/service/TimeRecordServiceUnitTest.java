@@ -16,6 +16,7 @@ import ru.haritonenko.task_time_tracker_api.employee.domain.role.EmployeeRole;
 import ru.haritonenko.task_time_tracker_api.employee.security.custom.authentification.AuthEmployee;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.mapper.TaskEntityMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 import ru.haritonenko.task_time_tracker_api.time_records.api.dto.TimeRecordCreateRequestDto;
 import ru.haritonenko.task_time_tracker_api.time_records.api.dto.filter.TimeRecordPageFilter;
@@ -102,6 +103,7 @@ class TimeRecordServiceUnitTest {
                 .title("done-task")
                 .description("done-desc")
                 .status(TaskStatus.DONE)
+                .priority(TaskPriority.MEDIUM)
                 .build();
 
         newTaskEntity = TaskEntity.builder()
@@ -109,6 +111,7 @@ class TimeRecordServiceUnitTest {
                 .title("new-task")
                 .description("new-desc")
                 .status(TaskStatus.NEW)
+                .priority(TaskPriority.MEDIUM)
                 .build();
 
         OffsetDateTime start = OffsetDateTime.parse("2026-04-10T09:00:00Z");

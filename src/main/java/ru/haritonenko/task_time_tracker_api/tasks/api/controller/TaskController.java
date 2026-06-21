@@ -8,22 +8,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.haritonenko.task_time_tracker_api.employee.security.custom.authentification.AuthEmployee;
 import ru.haritonenko.task_time_tracker_api.employee.security.service.AuthenticationService;
 import ru.haritonenko.task_time_tracker_api.tasks.api.dto.TaskCreateRequestDto;
 import ru.haritonenko.task_time_tracker_api.tasks.api.dto.TaskResponseDto;
 import ru.haritonenko.task_time_tracker_api.tasks.api.dto.TaskUpdateRequestDto;
+import ru.haritonenko.task_time_tracker_api.tasks.api.dto.filter.TaskPageFilter;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.mapper.TaskToResponseDtoMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.service.TaskService;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -120,6 +120,26 @@ public class TaskController {
 
         var task = taskService.changeTaskStatusById(id, updateRequestDto);
         return ResponseEntity.ok(mapper.toResponseDto(task));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<TaskResponseDto>> getTasksWithPriorityAndStatusFilter(
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(required = false) TaskStatus status,
+            @Valid TaskPageFilter taskPageFilter
+    ) {
+        AuthEmployee authenticatedEmployee = getAuthenticatedUser();
+        log.info(
+                "GET /api/tasks/search by employeeId={}, role={}",
+                authenticatedEmployee.id(),
+                authenticatedEmployee.role()
+        );
+        return ResponseEntity.ok(
+                taskService.getTasksWithPriorityAndStatusFilter(
+                priority,status,taskPageFilter.pageNumber(), taskPageFilter.pageSize())
+                        .stream().map(mapper::toResponseDto).toList()
+        );
+
     }
 
     private AuthEmployee getAuthenticatedUser() {

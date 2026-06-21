@@ -12,6 +12,7 @@ import ru.haritonenko.task_time_tracker_api.employee.security.custom.authentific
 import ru.haritonenko.task_time_tracker_api.integration.AbstractIntegrationTest;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.mapper.TaskEntityMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 import ru.haritonenko.task_time_tracker_api.time_records.api.dto.TimeRecordCreateRequestDto;
 import ru.haritonenko.task_time_tracker_api.time_records.api.dto.filter.TimeRecordPageFilter;
@@ -245,6 +246,7 @@ class TimeRecordServiceIntegrationTest extends AbstractIntegrationTest {
                 .title("task-" + System.nanoTime())
                 .description("task-description")
                 .status(status)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(OffsetDateTime.now())
                 .updatedAt(OffsetDateTime.now())
                 .build();

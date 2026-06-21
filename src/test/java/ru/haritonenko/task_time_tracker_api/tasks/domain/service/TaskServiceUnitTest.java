@@ -17,6 +17,7 @@ import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.IllegalTaskAr
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.IllegalTaskStateException;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.TaskNotFoundException;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.mapper.TaskToDomainMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 
 import java.time.OffsetDateTime;
@@ -62,12 +63,13 @@ class TaskServiceUnitTest {
                 .title("test-task")
                 .description("test-description")
                 .status(TaskStatus.NEW)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
 
-        taskDomain = new Task(1L, "test-task", "test-description", TaskStatus.NEW, now, now);
-        createRequestDto = new TaskCreateRequestDto("test-task", "test-description");
+        taskDomain = new Task(1L, "test-task", "test-description", TaskStatus.NEW, TaskPriority.MEDIUM, now, now);
+        createRequestDto = new TaskCreateRequestDto("test-task", "test-description", TaskPriority.MEDIUM);
         updateRequestDto = new TaskUpdateRequestDto(TaskStatus.DONE);
     }
 
@@ -112,7 +114,7 @@ class TaskServiceUnitTest {
     @Test
     void shouldSuccessfullyChangeTaskStatusById() {
         OffsetDateTime updatedAt = OffsetDateTime.parse("2026-04-16T11:00:00Z");
-        Task updatedDomain = new Task(1L, "test-task", "test-description", TaskStatus.DONE, taskEntity.getCreatedAt(), updatedAt);
+        Task updatedDomain = new Task(1L, "test-task", "test-description", TaskStatus.DONE, TaskPriority.MEDIUM, taskEntity.getCreatedAt(), updatedAt);
 
         when(taskEntityMapper.findById(1L)).thenReturn(Optional.of(taskEntity));
         when(taskEntityMapper.updateStatus(eq(1L), eq(TaskStatus.DONE), any(OffsetDateTime.class))).thenReturn(1);

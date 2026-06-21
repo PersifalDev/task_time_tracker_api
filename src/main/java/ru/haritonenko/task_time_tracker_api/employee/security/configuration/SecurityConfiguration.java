@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/employee").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/employee/auth").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/tasks/search").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/tasks/{id}").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/api/tasks").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/tasks/{id}/status").hasAnyAuthority("ADMIN", "USER")

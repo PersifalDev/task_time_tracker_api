@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import ru.haritonenko.task_time_tracker_api.db.AbstractMyBatisTest;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +31,7 @@ class TaskEntityMapperIntegrationTest extends AbstractMyBatisTest {
                 .title("mapper-task")
                 .description("mapper-description")
                 .status(TaskStatus.NEW)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -47,6 +50,7 @@ class TaskEntityMapperIntegrationTest extends AbstractMyBatisTest {
         assertEquals("mapper-task", foundTask.getTitle());
         assertEquals("mapper-description", foundTask.getDescription());
         assertEquals(TaskStatus.NEW, foundTask.getStatus());
+        assertEquals(TaskPriority.MEDIUM, foundTask.getPriority());
         assertEquals(
                 now.toInstant(),
                 foundTask.getCreatedAt().toInstant().truncatedTo(ChronoUnit.MICROS)
@@ -72,6 +76,7 @@ class TaskEntityMapperIntegrationTest extends AbstractMyBatisTest {
                 .title("mapper-task-to-update")
                 .description("mapper-description-to-update")
                 .status(TaskStatus.NEW)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -106,5 +111,38 @@ class TaskEntityMapperIntegrationTest extends AbstractMyBatisTest {
         );
 
         assertEquals(0, updatedRows);
+    }
+
+    @Test
+    void shouldFindTasksWithNullablePriorityAndStatusFilter() {
+        List<TaskEntity> filteredByPriorityAndStatus = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
+                TaskPriority.MEDIUM.name(),
+                TaskStatus.DONE.name(),
+                10,
+                0
+        );
+        List<TaskEntity> filteredByPriority = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
+                TaskPriority.MEDIUM.name(),
+                null,
+                10,
+                0
+        );
+        List<TaskEntity> filteredByStatus = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
+                null,
+                TaskStatus.DONE.name(),
+                10,
+                0
+        );
+        List<TaskEntity> withoutFilters = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
+                null,
+                null,
+                10,
+                0
+        );
+
+        assertFalse(filteredByPriorityAndStatus.isEmpty());
+        assertFalse(filteredByPriority.isEmpty());
+        assertFalse(filteredByStatus.isEmpty());
+        assertFalse(withoutFilters.isEmpty());
     }
 }

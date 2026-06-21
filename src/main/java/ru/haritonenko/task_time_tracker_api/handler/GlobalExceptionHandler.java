@@ -9,6 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.haritonenko.task_time_tracker_api.employee.domain.exception.EmployeeNotFoundException;
 import ru.haritonenko.task_time_tracker_api.employee.domain.exception.IllegalEmployeeArgumentException;
 import ru.haritonenko.task_time_tracker_api.employee.domain.exception.IllegalEmployeeStateException;
@@ -116,6 +117,22 @@ public class GlobalExceptionHandler {
 
         var errorDto = getErrorMessageResponse(
                 "Task argument error",
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorMessageResponse> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex
+    ) {
+        log.warn("Invalid task argument: {}", ex.getMessage(), ex);
+
+        var errorDto = getErrorMessageResponse(
+                "Method type mismatch error",
                 ex.getMessage()
         );
 

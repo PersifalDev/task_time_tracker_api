@@ -8,8 +8,8 @@ import ru.haritonenko.task_time_tracker_api.time_records.domain.TimeRecord;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-18T12:47:41+0700",
-    comments = "version: 1.6.3, compiler: javac, environment: Java 24.0.1 (Oracle Corporation)"
+    date = "2026-06-21T22:02:59+0700",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component
 public class TimeRecordToResponseDtoMapperImpl implements TimeRecordToResponseDtoMapper {

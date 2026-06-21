@@ -46,3 +46,19 @@ databaseChangeLog:
         - sqlFile:
             path: db/changelog/sql/006-seed-time-records.sql
             relativeToChangelogFile: false
+
+  - changeSet:
+      id: 007-add-priority-in-tasks
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/007-add-priority-in-tasks.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 008-seed-priority-tasks
+      author: haritonenko
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/008-seed-priority-tasks.sql
+            relativeToChangelogFile: false

@@ -11,6 +11,7 @@ import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.mapper.TaskEntityMapper;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.IllegalTaskArgumentException;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.TaskNotFoundException;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 
 import java.time.OffsetDateTime;
@@ -30,7 +31,8 @@ class TaskServiceIntegrationTest extends AbstractIntegrationTest {
     void shouldSuccessfullyCreateTask() {
         TaskCreateRequestDto requestDto = new TaskCreateRequestDto(
                 "integration-task",
-                "integration-description"
+                "integration-description",
+                TaskPriority.HIGH
         );
 
         Task createdTask = taskService.createTask(requestDto);
@@ -39,11 +41,13 @@ class TaskServiceIntegrationTest extends AbstractIntegrationTest {
         assertEquals(requestDto.title(), createdTask.title());
         assertEquals(requestDto.description(), createdTask.description());
         assertEquals(TaskStatus.NEW, createdTask.status());
+        assertEquals(TaskPriority.HIGH, createdTask.priority());
 
         TaskEntity foundTaskEntity = taskEntityMapper.findById(createdTask.id()).orElseThrow();
         assertEquals(requestDto.title(), foundTaskEntity.getTitle());
         assertEquals(requestDto.description(), foundTaskEntity.getDescription());
         assertEquals(TaskStatus.NEW, foundTaskEntity.getStatus());
+        assertEquals(TaskPriority.HIGH, foundTaskEntity.getPriority());
     }
 
     @Transactional
@@ -143,6 +147,7 @@ class TaskServiceIntegrationTest extends AbstractIntegrationTest {
                 .title("dummy-task")
                 .description("dummy-description")
                 .status(TaskStatus.NEW)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(OffsetDateTime.now())
                 .updatedAt(OffsetDateTime.now())
                 .build();

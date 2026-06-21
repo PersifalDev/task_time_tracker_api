@@ -28,18 +28,13 @@ spring:
 
   cache:
     type: ${TIME_TRACKER_CACHE_TYPE:redis}
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
-
+    
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY:change_me_to_a_long_dev_secret_key_1234567890}
+  secret-key: ${JWT_SECRET_KEY:}
   lifetime: ${JWT_LIFETIME_MS:86400000}
 
 app:

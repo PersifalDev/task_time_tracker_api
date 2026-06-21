@@ -1,0 +1,123 @@
+@host = http://localhost:8090
+@adminLogin = admin
+@adminPassword = admin_password
+@userLogin = pavlov
+@userPassword = pavlov_password
+
+### Register employee
+POST {{host}}/api/employee
+Content-Type: application/json
+
+{
+  "login": "tester1",
+  "password": "tester_password",
+  "age": 25
+}
+
+### Authenticate admin
+# @name adminAuth
+POST {{host}}/api/employee/auth
+Content-Type: application/json
+
+{
+  "login": "{{adminLogin}}",
+  "password": "{{adminPassword}}"
+}
+
+> {%
+    client.global.set("adminJwt", response.body.jwt);
+%}
+
+### Authenticate user
+# @name userAuth
+POST {{host}}/api/employee/auth
+Content-Type: application/json
+
+{
+  "login": "{{userLogin}}",
+  "password": "{{userPassword}}"
+}
+
+> {%
+    client.global.set("userJwt", response.body.jwt);
+%}
+
+### Debug current auth without token
+GET {{host}}/api/employee/debug/auth
+
+### Debug current auth as admin
+GET {{host}}/api/employee/debug/auth
+Authorization: Bearer {{adminJwt}}
+
+### Get employee by id as admin
+GET {{host}}/api/employee/1
+Authorization: Bearer {{adminJwt}}
+
+### Create task as admin
+# @name createTask
+POST {{host}}/api/tasks
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+
+{
+  "title": "Manual HTTP check",
+  "description": "Created from requests.http",
+  "priority": "MEDIUM"
+}
+
+### Get task by id
+GET {{host}}/api/tasks/111
+Authorization: Bearer {{adminJwt}}
+
+### Change task status
+PATCH {{host}}/api/tasks/111/status
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+
+{
+  "status": "IN_PROGRESS"
+}
+
+### Search tasks by priority and status
+GET {{host}}/api/tasks/search?priority=MEDIUM&status=DONE&pageNumber=0&pageSize=10
+Authorization: Bearer {{adminJwt}}
+
+### Create time record
+# @name createTimeRecord
+POST {{host}}/api/time-records
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+
+{
+  "employeeId": 3,
+  "taskId": 111,
+  "description": "Manual time record check",
+  "startTime": "2026-04-12T09:00:00Z",
+  "endTime": "2026-04-12T10:00:00Z"
+}
+
+### Get time record by id
+GET {{host}}/api/time-records/1001
+Authorization: Bearer {{adminJwt}}
+
+### Get time record info by employee and period
+POST {{host}}/api/time-records/info
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+
+{
+  "employeeId": 3,
+  "startTime": "2026-04-01T00:00:00Z",
+  "endTime": "2026-04-30T23:59:59Z"
+}
+
+### Search time records by employee and period
+POST {{host}}/api/time-records/search?pageNumber=0&pageSize=5
+Authorization: Bearer {{adminJwt}}
+Content-Type: application/json
+
+{
+  "employeeId": 3,
+  "startTime": "2026-04-01T00:00:00Z",
+  "endTime": "2026-04-30T23:59:59Z"
+}

@@ -11,6 +11,7 @@ import ru.haritonenko.task_time_tracker_api.employee.domain.db.mapper.EmployeeEn
 import ru.haritonenko.task_time_tracker_api.employee.domain.role.EmployeeRole;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.mapper.TaskEntityMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 import ru.haritonenko.task_time_tracker_api.time_records.domain.db.entity.TimeRecordEntity;
 
@@ -193,6 +194,7 @@ class TimeRecordEntityMapperIntegrationTest extends AbstractMyBatisTest {
                 .title(title)
                 .description(title + "-description")
                 .status(status)
+                .priority(TaskPriority.MEDIUM)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();

@@ -2,6 +2,7 @@ package ru.haritonenko.task_time_tracker_api.tasks.domain.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.haritonenko.task_time_tracker_api.config.properties.CacheProperties;
 import ru.haritonenko.task_time_tracker_api.tasks.api.dto.TaskCreateRequestDto;
 import ru.haritonenko.task_time_tracker_api.tasks.api.dto.TaskUpdateRequestDto;
+import ru.haritonenko.task_time_tracker_api.tasks.api.dto.filter.TaskPageFilter;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.Task;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.entity.TaskEntity;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.db.mapper.TaskEntityMapper;
@@ -16,9 +18,11 @@ import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.IllegalTaskAr
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.IllegalTaskStateException;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.exception.TaskNotFoundException;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.mapper.TaskToDomainMapper;
+import ru.haritonenko.task_time_tracker_api.tasks.domain.priority.TaskPriority;
 import ru.haritonenko.task_time_tracker_api.tasks.domain.status.TaskStatus;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -33,6 +37,10 @@ public class TaskService {
     private final TaskToDomainMapper taskMapper;
     private final RedisTemplate<String, Task> redisTaskTemplate;
     private final CacheProperties cacheProperties;
+    @Value("${app.pages.defaultPageNumber}")
+    private Integer defaultPageNumber;
+    @Value("${app.pages.defaultPageSize}")
+    private Integer defaultPageSize;
 
     public TaskService(
             TaskEntityMapper taskEntityMapper,
@@ -61,6 +69,7 @@ public class TaskService {
                 .title(createRequestDto.title())
                 .description(createRequestDto.description())
                 .status(TaskStatus.NEW)
+                .priority(createRequestDto.priority())
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -135,6 +144,27 @@ public class TaskService {
         return task;
     }
 
+    @Transactional(readOnly = true)
+    public List<Task> getTasksWithPriorityAndStatusFilter(
+            TaskPriority priority,
+            TaskStatus status,
+            Integer pageNumber,
+            Integer pageSize
+
+    ) {
+        log.info("Getting tasks with priority={} and status={}", priority, status);
+        Integer size = pageSize == null ? defaultPageSize : pageSize;
+        Integer number = pageNumber == null ? defaultPageNumber : pageNumber;
+        Integer offset = number * size;
+
+        String stringPriority = priority == null ? null : priority.toString();
+        String stringStatus = status == null ? null : status.toString();
+
+        List<TaskEntity> taskEntityList = taskEntityMapper.
+                findTasksWithPriorityAndStatusFilter(stringPriority,stringStatus,size,offset);
+        return taskEntityList.stream().map(this::mapToDomain).toList();
+    }
+
     private TaskEntity findTaskById(Long id) {
         return taskEntityMapper.findById(id)
                 .orElseThrow(() -> {
@@ -177,4 +207,6 @@ public class TaskService {
     private String getCacheKey(Long id) {
         return CACHE_KEY_PREFIX + id;
     }
+
+
 }
