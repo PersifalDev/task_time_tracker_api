@@ -116,20 +116,20 @@ class TaskEntityMapperIntegrationTest extends AbstractMyBatisTest {
     @Test
     void shouldFindTasksWithNullablePriorityAndStatusFilter() {
         List<TaskEntity> filteredByPriorityAndStatus = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
-                TaskPriority.MEDIUM.name(),
-                TaskStatus.DONE.name(),
+                TaskPriority.MEDIUM,
+                TaskStatus.DONE,
                 10,
                 0
         );
         List<TaskEntity> filteredByPriority = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
-                TaskPriority.MEDIUM.name(),
+                TaskPriority.MEDIUM,
                 null,
                 10,
                 0
         );
         List<TaskEntity> filteredByStatus = taskEntityMapper.findTasksWithPriorityAndStatusFilter(
                 null,
-                TaskStatus.DONE.name(),
+                TaskStatus.DONE,
                 10,
                 0
         );

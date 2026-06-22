@@ -157,11 +157,8 @@ public class TaskService {
         Integer number = pageNumber == null ? defaultPageNumber : pageNumber;
         Integer offset = number * size;
 
-        String stringPriority = priority == null ? null : priority.toString();
-        String stringStatus = status == null ? null : status.toString();
-
         List<TaskEntity> taskEntityList = taskEntityMapper.
-                findTasksWithPriorityAndStatusFilter(stringPriority,stringStatus,size,offset);
+                findTasksWithPriorityAndStatusFilter(priority,status,size,offset);
         return taskEntityList.stream().map(this::mapToDomain).toList();
     }
 

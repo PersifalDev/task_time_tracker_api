@@ -46,8 +46,8 @@ public interface TaskEntityMapper {
             OFFSET #{offset}
             """)
     List<TaskEntity> findTasksWithPriorityAndStatusFilter(
-            @Param("priority") String priority,
-            @Param("status") String status,
+            @Param("priority") TaskPriority priority,
+            @Param("status") TaskStatus status,
             @Param("limit") Integer limit,
             @Param("offset") Integer offset
     );

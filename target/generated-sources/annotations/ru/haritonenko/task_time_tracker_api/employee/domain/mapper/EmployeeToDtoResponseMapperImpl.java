@@ -7,7 +7,7 @@ import ru.haritonenko.task_time_tracker_api.employee.domain.Employee;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-06-21T22:02:59+0700",
+    date = "2026-06-22T21:00:21+0700",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.2 (Oracle Corporation)"
 )
 @Component

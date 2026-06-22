@@ -1,6 +1,10 @@
 package ru.haritonenko.task_time_tracker_api.tasks.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -8,9 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 import ru.haritonenko.task_time_tracker_api.employee.security.custom.authentification.AuthEmployee;
 import ru.haritonenko.task_time_tracker_api.employee.security.service.AuthenticationService;
@@ -122,11 +126,36 @@ public class TaskController {
         return ResponseEntity.ok(mapper.toResponseDto(task));
     }
 
+    @Operation(
+            summary = "Найти задачи",
+            description = "Возвращает список задач по фильтрам приоритета, статуса и параметрам пагинации",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Список задач успешно получен",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TaskResponseDto.class)))
+            ),
+            @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+            @ApiResponse(responseCode = "401", description = "Не выполнена аутентификация"),
+            @ApiResponse(responseCode = "403", description = "Недостаточно прав")
+    })
     @GetMapping("/search")
     public ResponseEntity<List<TaskResponseDto>> getTasksWithPriorityAndStatusFilter(
+            @Parameter(
+                    description = "Приоритет задачи",
+                    example = "HIGH",
+                    schema = @Schema(implementation = TaskPriority.class)
+            )
             @RequestParam(required = false) TaskPriority priority,
+            @Parameter(
+                    description = "Статус задачи",
+                    example = "NEW",
+                    schema = @Schema(implementation = TaskStatus.class)
+            )
             @RequestParam(required = false) TaskStatus status,
-            @Valid TaskPageFilter taskPageFilter
+            @ParameterObject @Valid @ModelAttribute TaskPageFilter taskPageFilter
     ) {
         AuthEmployee authenticatedEmployee = getAuthenticatedUser();
         log.info(
