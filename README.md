@@ -127,7 +127,20 @@ Cache Aside реализован в сервисах:
 ### Задачи
 - `POST /api/tasks` — создать задачу
 - `GET /api/tasks/{id}` — получить задачу по ID
+- `GET /api/tasks/search` — получить список задач по фильтрам и пагинации
 - `PATCH /api/tasks/{id}/status` — изменить статус задачи
+
+Параметры фильтра для `GET /api/tasks/search` передаются в query string:
+- `priority` — необязательный приоритет задачи: `HIGH`, `MEDIUM`, `LOW`
+- `status` — необязательный статус задачи: `NEW`, `IN_PROGRESS`, `DONE`
+- `pageNumber` — необязательный номер страницы, начиная с `0`
+- `pageSize` — необязательный размер страницы, от `1` до `100`
+
+Пример:
+
+```http
+GET /api/tasks/search?priority=MEDIUM&status=DONE&pageNumber=0&pageSize=10
+```
 
 ---
 
@@ -151,6 +164,7 @@ Cache Aside реализован в сервисах:
 
 ### USER
 - `GET /api/tasks/{id}`
+- `GET /api/tasks/search`
 - `PATCH /api/tasks/{id}/status`
 - `POST /api/time-records`
 - `GET /api/time-records/{id}`

@@ -79,6 +79,10 @@ Content-Type: application/json
 }
 
 ### Search tasks by priority and status
+# Query params:
+# priority: optional HIGH, MEDIUM, LOW
+# status: optional NEW, IN_PROGRESS, DONE
+# pageNumber/pageSize: optional pagination params from TaskPageFilter
 GET {{host}}/api/tasks/search?priority=MEDIUM&status=DONE&pageNumber=0&pageSize=10
 Authorization: Bearer {{adminJwt}}
 
